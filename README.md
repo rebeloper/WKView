@@ -43,7 +43,7 @@ struct ContentView: View {
 
 Note: Here we are hiding the **Back button** of the web view by setting `hidesBackButton` to `false` because the `ContentView` is the root view of our app.
 
-## Features
+## 🧳 Features
 
 In the example below you can see one pushed and two presented `WebView`s. Take a look at the cool ways you may customize the `WebView` style.
 
@@ -92,6 +92,22 @@ struct ContentView: View {
     }
 }
 ```
+## 📱 Screenshots
+
+<details>
+    <summary>Pushed WebView</summary>
+    <img src="../media/Sources/ReadMeAssets/WKView00000.png" width="350px">
+</details>
+
+<details>
+    <summary>Presented WebView</summary>
+    <img src="../media/Sources/ReadMeAssets/WKView00001.png" width="350px">
+</details>
+
+<details>
+    <summary>Custom Presented WebView</summary>
+    <img src="../media/Sources/ReadMeAssets/WKView00002.png" width="350px">
+</details>
 
 ## ✍️ Contact
 
