@@ -15,6 +15,7 @@ public struct WebView: View {
     let url: String
     let tintColor: Color
     let backText: Text
+    let hidesBackButton: Bool
     let reloadImage: Image
     let goForwardImage: Image
     let goBackImage: Image
@@ -23,12 +24,14 @@ public struct WebView: View {
          tintColor: Color = .blue,
          titleColor: Color = .primary,
          backText: Text = Text("Back"),
+         hidesBackButton: Bool = false,
          reloadImage: Image = Image(systemName: "gobackward"),
          goForwardImage: Image = Image(systemName: "chevron.forward"),
          goBackImage: Image = Image(systemName: "chevron.backward")) {
         self.url = url
         self.tintColor = tintColor
         self.backText = backText
+        self.hidesBackButton = hidesBackButton
         self.reloadImage = reloadImage
         self.goForwardImage = goForwardImage
         self.goBackImage = goBackImage
@@ -46,9 +49,7 @@ public struct WebView: View {
             WebPresenterView(url: URL.init(string: url)!, webViewStateModel: self.webViewStateModel)
         }
         .navigationBarBackButtonHidden(true)
-        .navigationBarTitle(
-            Text(webViewStateModel.pageTitle)
-            , displayMode: .inline)
+        .navigationBarTitle(Text(webViewStateModel.pageTitle), displayMode: .inline)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Spacer()
@@ -86,9 +87,15 @@ public struct WebView: View {
         .navigationBarItems(
             leading:
                 Button {
-                    self.presentationMode.wrappedValue.dismiss()
+                    if !hidesBackButton {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
                 } label: {
-                    backText
+                    if !hidesBackButton {
+                        backText
+                    } else {
+                        Spacer()
+                    }
                 }
                 .accentColor(tintColor)
             , trailing:
