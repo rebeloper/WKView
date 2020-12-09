@@ -25,7 +25,73 @@ import WKView
 
 ## 🛠 How to use
 
+The simplest way to use `WKView` is to call `WebView` with a `URL String`. 
+IMPORTANT: `WebView` must be presented inside a `NavigationView`.
 
+```
+import SwiftUI
+import WKView
+
+struct ContentView: View {
+    var body: some View {
+        NavigationView {
+            WebView(url: "https://rebeloper.com", hidesBackButton: true)
+        }
+    }
+}
+```
+
+Note: Here we are hiding the **Back button** of the web view by setting `hidesBackButton` to `false` because the `ContentView` is the root view of our app.
+
+## Features
+
+In the example below you can see one pushed and two presented `WebView`s. Take a look at the cool ways you may customize the `WebView` style.
+
+```
+import SwiftUI
+import WKView
+
+struct ContentView: View {
+    
+    @State var isSheetPresented = false
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 12) {
+                Divider()
+                
+                // 1. Push a WebView with a url
+                NavigationLink("Push WebView", destination: WebView(url: "https://rebeloper.com"))
+                Button(action: {
+                    isSheetPresented.toggle()
+                }, label: {
+                    Text("Present WebView")
+                }).sheet(isPresented: $isSheetPresented, content: {
+                    NavigationView {
+                        
+                        // 2. Present WebView in a modal with hiding the back button
+//                        WebView(url: "https://rebeloper.com", hidesBackButton: true)
+                        
+                        // 3. Present a customized WebView in a modal
+                        WebView(url: "https://rebeloper.com",
+                                tintColor: .red,
+                                titleColor: .yellow,
+                                backText: Text("Cancel").italic(),
+                                hidesBackButton: false,
+                                reloadImage: Image(systemName: "figure.wave"),
+                                goForwardImage: Image(systemName: "forward.frame.fill"),
+                                goBackImage: Image(systemName: "backward.frame.fill"))
+                    }
+                })
+                Spacer()
+            }
+            .navigationBarTitle("WKView")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        
+    }
+}
+```
 
 ## ✍️ Contact
 
