@@ -9,7 +9,7 @@ Using <a href="https://swift.org/package-manager/" rel="nofollow">Swift Package 
 https://github.com/rebeloper/WKView.git
 ```
 ### ✊ Manual Installation
-Download and include the `Stax` folder and files in your codebase.
+Download and include the `WKView` folder and files in your codebase.
 
 ### 📲 Requirements
 - iOS 14+
