@@ -21,7 +21,7 @@ public struct WebView: View {
     
     public init(url: String,
          tintColor: Color = .blue,
-         titleColor: Color = .black,
+         titleColor: Color = .primary,
          backText: Text = Text("Back"),
          reloadImage: Image = Image(systemName: "gobackward"),
          goForwardImage: Image = Image(systemName: "chevron.forward"),
