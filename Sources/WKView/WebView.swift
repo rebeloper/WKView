@@ -19,6 +19,7 @@ public struct WebView: View {
     let reloadImage: Image
     let goForwardImage: Image
     let goBackImage: Image
+    var allowedHosts: [String]?
     var onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
     public init(url: String,
@@ -29,6 +30,7 @@ public struct WebView: View {
          reloadImage: Image = Image(systemName: "gobackward"),
          goForwardImage: Image = Image(systemName: "chevron.forward"),
          goBackImage: Image = Image(systemName: "chevron.backward"),
+         allowedHosts: [String]? = nil,
          onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil) {
         self.url = url
         self.tintColor = tintColor
@@ -40,6 +42,7 @@ public struct WebView: View {
         
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(titleColor)]
         
+        self.allowedHosts = allowedHosts
         self.onNavigationAction = onNavigationAction
            
     }
@@ -50,7 +53,7 @@ public struct WebView: View {
     public var body: some View {
         
         LoadingView(isShowing: .constant(webViewStateModel.loading)) {
-            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, onNavigationAction: onNavigationAction)
+            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, onNavigationAction: onNavigationAction, allowedHosts: allowedHosts)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarTitle(Text(webViewStateModel.pageTitle), displayMode: .inline)
