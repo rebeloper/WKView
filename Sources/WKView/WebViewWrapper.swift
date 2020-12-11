@@ -75,13 +75,13 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         if let host = navigationAction.request.url?.host {
             if host.contains("hackingwithswift.com") {
                 decisionHandler(.allow)
-                action?(.decidePolicy(navigationAction, decisionHandler))
+                action?(.decidePolicy(navigationAction, .allow))
                 return
             }
         }
         
         decisionHandler(.cancel)
-        action?(.decidePolicy(navigationAction, decisionHandler))
+        action?(.decidePolicy(navigationAction, .cancel))
     }
     
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
