@@ -29,7 +29,7 @@ public struct WebView: View {
          reloadImage: Image = Image(systemName: "gobackward"),
          goForwardImage: Image = Image(systemName: "chevron.forward"),
          goBackImage: Image = Image(systemName: "chevron.backward"),
-         onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?) {
+         onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil) {
         self.url = url
         self.tintColor = tintColor
         self.backText = backText
