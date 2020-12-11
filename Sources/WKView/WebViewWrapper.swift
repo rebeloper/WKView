@@ -88,6 +88,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                 var allowed = false
                 allowedHosts.forEach { (allowedHost) in
                     if host.contains(allowedHost) {
+                        print("WebView -> Found allowed host: \(allowedHost)")
                         allowed = true
                     }
                 }
@@ -102,6 +103,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
             }
             
         } else {
+            print("WebView -> All hosts are allowed")
             decisionHandler(.allow)
             action?(.decidePolicy(webView, navigationAction, .allow))
         }
@@ -115,6 +117,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                 var forbidden = false
                 forbiddenHosts.forEach { (forbiddenHost) in
                     if host.contains(forbiddenHost) {
+                        print("WebView -> Found forbidden host: \(forbiddenHost)")
                         forbidden = true
                     }
                 }
@@ -132,6 +135,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
             }
             
         } else {
+            print("WebView -> No forbidden host are set")
             handleAllowedHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
         }
     }
