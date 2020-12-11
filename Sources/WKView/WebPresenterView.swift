@@ -28,27 +28,31 @@ public struct WebPresenterView: View {
     let uRLRequest: URLRequest
     
     let allowedHosts: [String]?
+    let forbiddenHosts: [String]?
     
     public var body: some View {
         
         WebViewWrapper(webViewStateModel: webViewStateModel,
-                       action: actionDelegate,
                        request: uRLRequest,
-                       allowedHosts: allowedHosts)
+                       action: actionDelegate,
+                       allowedHosts: allowedHosts,
+                       forbiddenHosts: forbiddenHosts)
     }
     
-    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?) {
+    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?) {
         self.uRLRequest = uRLRequest
         self.webViewStateModel = webViewStateModel
         self.actionDelegate = onNavigationAction
         self.allowedHosts = allowedHosts
+        self.forbiddenHosts = forbiddenHosts
     }
     
-    init(url: URL, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil, allowedHosts: [String]? = nil) {
+    init(url: URL, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?) {
         self.init(uRLRequest: URLRequest(url: url),
                   webViewStateModel: webViewStateModel,
                   onNavigationAction: onNavigationAction,
-                  allowedHosts: allowedHosts)
+                  allowedHosts: allowedHosts,
+                  forbiddenHosts: forbiddenHosts)
     }
 }
 
