@@ -97,6 +97,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                     decisionHandler(.allow)
                     action?(.decidePolicy(webView, navigationAction, .allow))
                 } else {
+                    print("WebView -> Did not find allowed hosts for: \(host)")
                     decisionHandler(.cancel)
                     action?(.decidePolicy(webView, navigationAction, .cancel))
                 }
@@ -126,6 +127,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                     decisionHandler(.cancel)
                     action?(.decidePolicy(webView, navigationAction, .cancel))
                 } else {
+                    print("WebView -> Did not find forbidden hosts for: \(host)")
                     handleAllowedHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
                 }
                 
