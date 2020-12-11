@@ -104,7 +104,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
             }
             
         } else {
-            print("WebView -> All hosts are allowed")
+            print("WebView -> No allowed host are set")
             decisionHandler(.allow)
             action?(.decidePolicy(webView, navigationAction, .allow))
         }
