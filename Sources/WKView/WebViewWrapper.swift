@@ -79,11 +79,39 @@ final public class WebViewWrapper : UIViewRepresentable {
 
 @available(iOS 13.0, *)
 extension WebViewWrapper.Coordinator: WKNavigationDelegate {
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        
+    
+    public func handleAllowedHosts(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let allowedHosts = allowedHosts {
+            
+            if let host = navigationAction.request.url?.host {
+                
+                var allowed = false
+                allowedHosts.forEach { (allowedHost) in
+                    if host.contains(allowedHost) {
+                        allowed = true
+                    }
+                }
+                
+                if allowed {
+                    decisionHandler(.allow)
+                    action?(.decidePolicy(webView, navigationAction, .allow))
+                } else {
+                    decisionHandler(.cancel)
+                    action?(.decidePolicy(webView, navigationAction, .cancel))
+                }
+            }
+            
+        } else {
+            decisionHandler(.allow)
+            action?(.decidePolicy(webView, navigationAction, .allow))
+        }
+    }
+    
+    public func handleForbiddenHosts(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)  {
         if let forbiddenHosts = forbiddenHosts {
             
             if let host = navigationAction.request.url?.host {
+                
                 var forbidden = false
                 forbiddenHosts.forEach { (forbiddenHost) in
                     if host.contains(forbiddenHost) {
@@ -94,41 +122,22 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                 if forbidden {
                     decisionHandler(.cancel)
                     action?(.decidePolicy(webView, navigationAction, .cancel))
-                    return
-                }
-                
-                if let allowedHosts = allowedHosts {
-                    
-                    if let host = navigationAction.request.url?.host {
-                        var allowed = false
-                        allowedHosts.forEach { (allowedHost) in
-                            if host.contains(allowedHost) {
-                                allowed = true
-                            }
-                        }
-                        
-                        if allowed {
-                            decisionHandler(.allow)
-                            action?(.decidePolicy(webView, navigationAction, .allow))
-                            return
-                        }
-                    }
-                    
-                    decisionHandler(.cancel)
-                    action?(.decidePolicy(webView, navigationAction, .cancel))
-                    
                 } else {
-                    decisionHandler(.allow)
-                    action?(.decidePolicy(webView, navigationAction, .allow))
+                    handleAllowedHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
                 }
                 
+            } else {
+                decisionHandler(.cancel)
+                action?(.decidePolicy(webView, navigationAction, .cancel))
             }
             
-            decisionHandler(.cancel)
-            action?(.decidePolicy(webView, navigationAction, .cancel))
-            
+        } else {
+            handleAllowedHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
         }
-        
+    }
+    
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        handleForbiddenHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
     }
     
     public func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
