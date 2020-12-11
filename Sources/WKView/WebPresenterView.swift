@@ -29,6 +29,7 @@ public struct WebPresenterView: View {
     
     let allowedHosts: [String]?
     let forbiddenHosts: [String]?
+    let credential: URLCredential?
     
     public var body: some View {
         
@@ -36,23 +37,26 @@ public struct WebPresenterView: View {
                        request: uRLRequest,
                        action: actionDelegate,
                        allowedHosts: allowedHosts,
-                       forbiddenHosts: forbiddenHosts)
+                       forbiddenHosts: forbiddenHosts,
+                       credential: credential)
     }
     
-    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?) {
+    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
         self.uRLRequest = uRLRequest
         self.webViewStateModel = webViewStateModel
         self.actionDelegate = onNavigationAction
         self.allowedHosts = allowedHosts
         self.forbiddenHosts = forbiddenHosts
+        self.credential = credential
     }
     
-    init(url: URL, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?) {
+    init(url: URL, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
         self.init(uRLRequest: URLRequest(url: url),
                   webViewStateModel: webViewStateModel,
                   onNavigationAction: onNavigationAction,
                   allowedHosts: allowedHosts,
-                  forbiddenHosts: forbiddenHosts)
+                  forbiddenHosts: forbiddenHosts,
+                  credential: credential)
     }
 }
 

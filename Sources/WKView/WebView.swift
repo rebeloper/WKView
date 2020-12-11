@@ -21,6 +21,7 @@ public struct WebView: View {
     let goBackImage: Image
     var allowedHosts: [String]?
     var forbiddenHosts: [String]?
+    var credential: URLCredential?
     var onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
     public init(url: String,
@@ -33,6 +34,7 @@ public struct WebView: View {
          goBackImage: Image = Image(systemName: "chevron.backward"),
          allowedHosts: [String]? = nil,
          forbiddenHosts: [String]? = nil,
+         credential: URLCredential? = nil,
          onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil) {
         self.url = url
         self.tintColor = tintColor
@@ -46,6 +48,7 @@ public struct WebView: View {
         
         self.allowedHosts = allowedHosts
         self.forbiddenHosts = forbiddenHosts
+        self.credential = credential
         self.onNavigationAction = onNavigationAction
            
     }
@@ -56,7 +59,7 @@ public struct WebView: View {
     public var body: some View {
         
         LoadingView(isShowing: .constant(webViewStateModel.loading)) {
-            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, onNavigationAction: onNavigationAction, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts)
+            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, onNavigationAction: onNavigationAction, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarTitle(Text(webViewStateModel.pageTitle), displayMode: .inline)
