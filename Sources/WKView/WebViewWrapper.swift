@@ -123,9 +123,25 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         
-        if action == nil  {
+//        if action == nil  {
+//            completionHandler(.performDefaultHandling, nil)
+//        } else {
+//            action?(.didRecieveAuthChallenge(challenge, completionHandler))
+//        }
+        
+        guard (webView.url?.host) != nil else {
+            return
+        }
+        let authenticationMethod = challenge.protectionSpace.authenticationMethod
+        if authenticationMethod == NSURLAuthenticationMethodDefault || authenticationMethod == NSURLAuthenticationMethodHTTPBasic || authenticationMethod == NSURLAuthenticationMethodHTTPDigest {
+            let credential = URLCredential(user: "userName", password: "password", persistence: .none)
+            completionHandler(.useCredential, credential)
+            action?(.didRecieveAuthChallenge(challenge, completionHandler))
+        } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
             completionHandler(.performDefaultHandling, nil)
+            action?(.didRecieveAuthChallenge(challenge, completionHandler))
         } else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
             action?(.didRecieveAuthChallenge(challenge, completionHandler))
         }
         
