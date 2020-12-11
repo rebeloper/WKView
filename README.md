@@ -15,6 +15,10 @@ Download and include the `WKView` folder and files in your codebase.
 - iOS 14+
 - Swift 5
 
+## Video Tutorial
+
+<p><a href="https://www.youtube.com/watch?v=FPvH3--Q3ys&list=PL_csAAO9PQ8Yj7ZU7n2IJjIsqcFaLcvJN&index=3">WKWebView SwiftUI on YouTube</a></p>
+
 ## 👉 Import
 
 Import `WKView` into your `ViewController`
@@ -154,10 +158,10 @@ struct ContentView: View {
 
 ## ✍️ Contact
 
-<a href="http://rebeloper.com/">rebeloper.com</a> / 
-<a href="http://www.youtube.com/rebeloper/">YouTube</a> / 
-<a href="http://store.rebeloper.com/">Shop</a> / 
-<a href="http://rebeloper.com/mentoring">Mentoring</a>
+<a href="https://rebeloper.com/">rebeloper.com</a> / 
+<a href="https://www.youtube.com/rebeloper/">YouTube</a> / 
+<a href="https://store.rebeloper.com/">Shop</a> / 
+<a href="https://rebeloper.com/mentoring">Mentoring</a>
 
 ## 📃 License
 
