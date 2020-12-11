@@ -66,11 +66,22 @@ final public class WebViewWrapper : UIViewRepresentable {
 extension WebViewWrapper.Coordinator: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
-        if action == nil {
-            decisionHandler(.allow)
-        } else {
-            action?(.decidePolicy(navigationAction, decisionHandler))
+//        if action == nil {
+//            decisionHandler(.allow)
+//        } else {
+//            action?(.decidePolicy(navigationAction, decisionHandler))
+//        }
+        
+        if let host = navigationAction.request.url?.host {
+            if host.contains("hackingwithswift.com") {
+                decisionHandler(.allow)
+                action?(.decidePolicy(navigationAction, decisionHandler))
+                return
+            }
         }
+        
+        decisionHandler(.cancel)
+        action?(.decidePolicy(navigationAction, decisionHandler))
     }
     
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
@@ -115,7 +126,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         if action == nil  {
             completionHandler(.performDefaultHandling, nil)
         } else {
-            action?(.didRecieveAuthChallange(challenge, completionHandler))
+            action?(.didRecieveAuthChallenge(challenge, completionHandler))
         }
         
     }

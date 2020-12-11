@@ -11,14 +11,14 @@ import WebKit
 @available(iOS 13.0, *)
 public struct WebPresenterView: View {
      public enum NavigationAction {
-           case decidePolicy(WKNavigationAction,  (WKNavigationActionPolicy) -> Void) //mendetory
-           case didRecieveAuthChallange(URLAuthenticationChallenge, (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) //mendetory
+           case decidePolicy(WKNavigationAction, (WKNavigationActionPolicy) -> Void) //mandatory
+           case didRecieveAuthChallenge(URLAuthenticationChallenge, (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) //mandatory
            case didStartProvisionalNavigation(WKNavigation)
            case didReceiveServerRedirectForProvisionalNavigation(WKNavigation)
            case didCommit(WKNavigation)
            case didFinish(WKNavigation)
-           case didFailProvisionalNavigation(WKNavigation,Error)
-           case didFail(WKNavigation,Error)
+           case didFailProvisionalNavigation(WKNavigation, Error)
+           case didFail(WKNavigation, Error)
        }
        
     @ObservedObject var webViewStateModel: WebViewStateModel
