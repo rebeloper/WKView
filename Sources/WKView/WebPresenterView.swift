@@ -12,7 +12,7 @@ import WebKit
 public struct WebPresenterView: View {
      public enum NavigationAction {
            case decidePolicy(WKNavigationAction, WKNavigationActionPolicy) //mandatory
-           case didRecieveAuthChallenge(URLAuthenticationChallenge, (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) //mandatory
+           case didRecieveAuthChallenge(URLAuthenticationChallenge, URLSession.AuthChallengeDisposition, URLCredential?) //mandatory
            case didStartProvisionalNavigation(WKNavigation)
            case didReceiveServerRedirectForProvisionalNavigation(WKNavigation)
            case didCommit(WKNavigation)

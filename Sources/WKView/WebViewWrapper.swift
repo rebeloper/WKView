@@ -137,17 +137,17 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
             let authenticationMethod = challenge.protectionSpace.authenticationMethod
             if authenticationMethod == NSURLAuthenticationMethodDefault || authenticationMethod == NSURLAuthenticationMethodHTTPBasic || authenticationMethod == NSURLAuthenticationMethodHTTPDigest {
                 completionHandler(.useCredential, credential)
-                action?(.didRecieveAuthChallenge(challenge, completionHandler))
+                action?(.didRecieveAuthChallenge(challenge, .useCredential, credential))
             } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
                 completionHandler(.performDefaultHandling, nil)
-                action?(.didRecieveAuthChallenge(challenge, completionHandler))
+                action?(.didRecieveAuthChallenge(challenge, .performDefaultHandling, nil))
             } else {
                 completionHandler(.cancelAuthenticationChallenge, nil)
-                action?(.didRecieveAuthChallenge(challenge, completionHandler))
+                action?(.didRecieveAuthChallenge(challenge, .cancelAuthenticationChallenge, nil))
             }
         } else {
             completionHandler(.performDefaultHandling, nil)
-            action?(.didRecieveAuthChallenge(challenge, completionHandler))
+            action?(.didRecieveAuthChallenge(challenge, .performDefaultHandling, nil))
         }
     }
     
