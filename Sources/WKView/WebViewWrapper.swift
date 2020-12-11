@@ -73,12 +73,17 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         
         if let allowedHosts = allowedHosts {
             if let host = navigationAction.request.url?.host {
+                var allowed = false
                 allowedHosts.forEach { (allowedHost) in
                     if host.contains(allowedHost) {
-                        decisionHandler(.allow)
-                        action?(.decidePolicy(navigationAction, .allow))
-                        return
+                        allowed = true
                     }
+                }
+                
+                if allowed {
+                    decisionHandler(.allow)
+                    action?(.decidePolicy(navigationAction, .allow))
+                    return
                 }
             }
             
