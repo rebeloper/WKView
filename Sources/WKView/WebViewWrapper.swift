@@ -80,7 +80,6 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
         action?(.didReceiveServerRedirectForProvisionalNavigation(navigation))
-
     }
     
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {

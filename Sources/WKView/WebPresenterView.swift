@@ -10,7 +10,7 @@ import WebKit
 
 @available(iOS 13.0, *)
 public struct WebPresenterView: View {
-     enum NavigationAction {
+     public enum NavigationAction {
            case decidePolicy(WKNavigationAction,  (WKNavigationActionPolicy) -> Void) //mendetory
            case didRecieveAuthChallange(URLAuthenticationChallenge, (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) //mendetory
            case didStartProvisionalNavigation(WKNavigation)
