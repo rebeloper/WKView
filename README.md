@@ -62,25 +62,68 @@ struct ContentView: View {
                 
                 // 1. Push a WebView with a url
                 NavigationLink("Push WebView", destination: WebView(url: "https://rebeloper.com"))
+                
                 Button(action: {
                     isSheetPresented.toggle()
                 }, label: {
                     Text("Present WebView")
                 }).sheet(isPresented: $isSheetPresented, content: {
                     NavigationView {
-                        
                         // 2. Present WebView in a modal with hiding the back button
 //                        WebView(url: "https://rebeloper.com", hidesBackButton: true)
                         
                         // 3. Present a customized WebView in a modal
-                        WebView(url: "https://rebeloper.com",
-                                tintColor: .red,
-                                titleColor: .yellow,
-                                backText: Text("Cancel").italic(),
-                                hidesBackButton: false,
-                                reloadImage: Image(systemName: "figure.wave"),
-                                goForwardImage: Image(systemName: "forward.frame.fill"),
-                                goBackImage: Image(systemName: "backward.frame.fill"))
+//                        WebView(url: "https://rebeloper.com",
+//                                tintColor: .red,
+//                                titleColor: .yellow,
+//                                backText: Text("Cancel").italic(),
+//                                reloadImage: Image(system"figure.wave"),
+//                                goForwardImage: Image(system"forward.frame.fill"),
+//                                goBackImage: Image(system"backward.frame.fill"))
+                        
+                        // 4. Present a webview with onNavigationAction and optional: allowedHosts, forbiddenHosts and credential
+                        WebView(url: "https://rebeloper.com"//,
+//                                allowedHosts: ["github", ".com"],
+//                                forbiddenHosts: [".org", "google"],
+//                                credential: URLCredential(user: "user", password: "password", persistence: .none)
+                        ){ (onNavigationAction) in
+                            switch onNavigationAction {
+                            case .decidePolicy(let webView, let navigationAction, let policy):
+                                print("WebView -> \(String(describing: webView.url)) -> decidePolicy navigationAction: \(navigationAction)")
+                                switch policy {
+                                case .cancel:
+                                    print("WebView -> \(String(describing: webView.url)) -> decidePolicy: .cancel")
+                                    isSheetPresented = false
+                                case .allow:
+                                    print("WebView -> \(String(describing: webView.url)) -> decidePolicy: .allow")
+                                @unknown default:
+                                    print("WebView -> \(String(describing: webView.url)) -> decidePolicy: @unknown default")
+                                }
+                                
+                            case .didRecieveAuthChallenge(let webView, let challenge, let disposition, let credential):
+                                print("WebView -> \(String(describing: webView.url)) -> didRecieveAuthChallange challenge: \(challenge.protectionSpace.host)")
+                                print("WebView -> \(String(describing: webView.url)) -> didRecieveAuthChallange disposition: \(disposition.rawValue)")
+                                if let credential = credential {
+                                    print("WebView -> \(String(describing: webView.url)) -> didRecieveAuthChallange credential: \(credential)")
+                                }
+                                
+                            case .didStartProvisionalNavigation(let webView, let navigation):
+                                print("WebView -> \(String(describing: webView.url)) -> didStartProvisionalNavigation: \(navigation)")
+                            case .didReceiveServerRedirectForProvisionalNavigation(let webView, let navigation):
+                                print("WebView -> \(String(describing: webView.url)) -> didReceiveServerRedirectForProvisionalNavigation: \(navigation)")
+                            case .didCommit(let webView, let navigation):
+                                print("WebView -> \(String(describing: webView.url)) -> didCommit: \(navigation)")
+                            case .didFinish(let webView, let navigation):
+                                print("WebView -> \(String(describing: webView.url)) -> didFinish: \(navigation)")
+                            case .didFailProvisionalNavigation(let webView, let navigation, let error):
+                                print("WebView -> \(String(describing: webView.url)) -> didFailProvisionalNavigation: \(navigation)")
+                                print("WebView -> \(String(describing: webView.url)) -> didFailProvisionalNavigation: \(error)")
+                            case .didFail(let webView, let navigation, let error):
+                                print("WebView -> \(String(describing: webView.url)) -> didFail: \(navigation)")
+                                print("WebView -> \(String(describing: webView.url)) -> didFail: \(error)")
+                            }
+                        }
+                        
                     }
                 })
                 Spacer()
