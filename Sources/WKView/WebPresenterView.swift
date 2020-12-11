@@ -27,23 +27,28 @@ public struct WebPresenterView: View {
     
     let uRLRequest: URLRequest
     
+    let allowedHosts: [String]?
+    
     public var body: some View {
         
         WebViewWrapper(webViewStateModel: webViewStateModel,
                        action: actionDelegate,
-                       request: uRLRequest)
+                       request: uRLRequest,
+                       allowedHosts: allowedHosts)
     }
     
-    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?) {
+    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?) {
         self.uRLRequest = uRLRequest
         self.webViewStateModel = webViewStateModel
         self.actionDelegate = onNavigationAction
+        self.allowedHosts = allowedHosts
     }
     
-    init(url: URL, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil) {
+    init(url: URL, webViewStateModel: WebViewStateModel, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil, allowedHosts: [String]? = nil) {
         self.init(uRLRequest: URLRequest(url: url),
                   webViewStateModel: webViewStateModel,
-                  onNavigationAction: onNavigationAction)
+                  onNavigationAction: onNavigationAction,
+                  allowedHosts: allowedHosts)
     }
 }
 

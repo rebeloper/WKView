@@ -15,15 +15,18 @@ final public class WebViewWrapper : UIViewRepresentable {
     let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
     let request: URLRequest
+    
+    let allowedHosts: [String]?
       
     init(webViewStateModel: WebViewStateModel,
-    action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
-    request: URLRequest) {
+         action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
+         request: URLRequest,
+         allowedHosts: [String]?) {
         self.action = action
         self.request = request
         self.webViewStateModel = webViewStateModel
+        self.allowedHosts = allowedHosts
     }
-    
     
     public func makeUIView(context: Context) -> WKWebView  {
         let view = WKWebView()
@@ -46,17 +49,19 @@ final public class WebViewWrapper : UIViewRepresentable {
     }
     
     public func makeCoordinator() -> Coordinator {
-        return Coordinator(action: action, webViewStateModel: webViewStateModel)
+        return Coordinator(action: action, webViewStateModel: webViewStateModel, allowedHosts: allowedHosts)
     }
     
     final public class Coordinator: NSObject {
         @ObservedObject var webViewStateModel: WebViewStateModel
         let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
+        let allowedHosts: [String]?
         
         init(action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
-             webViewStateModel: WebViewStateModel) {
+             webViewStateModel: WebViewStateModel, allowedHosts: [String]?) {
             self.action = action
             self.webViewStateModel = webViewStateModel
+            self.allowedHosts = allowedHosts
         }
         
     }
@@ -66,22 +71,24 @@ final public class WebViewWrapper : UIViewRepresentable {
 extension WebViewWrapper.Coordinator: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
-//        if action == nil {
-//            decisionHandler(.allow)
-//        } else {
-//            action?(.decidePolicy(navigationAction, decisionHandler))
-//        }
-        
-        if let host = navigationAction.request.url?.host {
-            if host.contains("hackingwithswift.com") {
-                decisionHandler(.allow)
-                action?(.decidePolicy(navigationAction, .allow))
-                return
+        if let allowedHosts = allowedHosts {
+            if let host = navigationAction.request.url?.host {
+                allowedHosts.forEach { (allowedHost) in
+                    if host.contains(allowedHost) {
+                        decisionHandler(.allow)
+                        action?(.decidePolicy(navigationAction, .allow))
+                        return
+                    }
+                }
             }
+            
+            decisionHandler(.cancel)
+            action?(.decidePolicy(navigationAction, .cancel))
+        } else {
+            decisionHandler(.allow)
+            action?(.decidePolicy(navigationAction, .allow))
         }
         
-        decisionHandler(.cancel)
-        action?(.decidePolicy(navigationAction, .cancel))
     }
     
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
