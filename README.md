@@ -15,13 +15,13 @@ Download and include the `WKView` folder and files in your codebase.
 - iOS 14+
 - Swift 5
 
-## 📼 Video Tutorial
+## 🎬 Video Tutorial
 
 <p><a href="https://www.youtube.com/watch?v=FPvH3--Q3ys&list=PL_csAAO9PQ8Yj7ZU7n2IJjIsqcFaLcvJN&index=3">WKWebView SwiftUI on YouTube</a></p>
 
 ## 👉 Import
 
-Import `WKView` into your `ViewController`
+Import `WKView` into your `View`
 
 ```
 import WKView
