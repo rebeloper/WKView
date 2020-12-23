@@ -72,7 +72,9 @@ final public class WebViewWrapper : UIViewRepresentable {
         init(action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
              webViewStateModel: WebViewStateModel, title: String?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
             self.action = action
-            self.webViewStateModel = webViewStateModel
+            let modifiedWebViewStateModel = webViewStateModel
+            modifiedWebViewStateModel.pageTitle = title ?? "Loading..."
+            self.webViewStateModel = modifiedWebViewStateModel
             self.title = title
             self.allowedHosts = allowedHosts
             self.forbiddenHosts = forbiddenHosts
