@@ -33,7 +33,7 @@ public struct WebView: View {
          reloadImage: Image = Image(systemName: "gobackward"),
          goForwardImage: Image = Image(systemName: "chevron.forward"),
          goBackImage: Image = Image(systemName: "chevron.backward"),
-         title: String?,
+         title: String? = nil,
          allowedHosts: [String]? = nil,
          forbiddenHosts: [String]? = nil,
          credential: URLCredential? = nil,
