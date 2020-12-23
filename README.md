@@ -84,8 +84,11 @@ struct ContentView: View {
 //                                reloadImage: Image(system"figure.wave"),
 //                                goForwardImage: Image(system"forward.frame.fill"),
 //                                goBackImage: Image(system"backward.frame.fill"))
+
+                        // 4. Present WebView in a modal with a constant title
+//                        WebView(url: "https://rebeloper.com", title: "WKView")
                         
-                        // 4. Present a webview with onNavigationAction and optional: allowedHosts, forbiddenHosts and credential
+                        // 5. Present a webview with onNavigationAction and optional: allowedHosts, forbiddenHosts and credential
                         WebView(url: "https://rebeloper.com"//,
 //                                allowedHosts: ["github", ".com"],
 //                                forbiddenHosts: [".org", "google"],

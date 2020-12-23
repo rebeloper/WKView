@@ -15,6 +15,7 @@ final public class WebViewWrapper : UIViewRepresentable {
     let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
     let request: URLRequest
+    let title: String?
     
     let allowedHosts: [String]?
     let forbiddenHosts: [String]?
@@ -22,12 +23,14 @@ final public class WebViewWrapper : UIViewRepresentable {
       
     init(webViewStateModel: WebViewStateModel,
          request: URLRequest,
+         title: String?,
          action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
          allowedHosts: [String]?,
          forbiddenHosts: [String]?,
          credential: URLCredential?) {
         self.action = action
         self.request = request
+        self.title = title
         self.webViewStateModel = webViewStateModel
         self.allowedHosts = allowedHosts
         self.forbiddenHosts = forbiddenHosts
@@ -55,20 +58,22 @@ final public class WebViewWrapper : UIViewRepresentable {
     }
     
     public func makeCoordinator() -> Coordinator {
-        return Coordinator(action: action, webViewStateModel: webViewStateModel, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
+        return Coordinator(action: action, webViewStateModel: webViewStateModel, title: title, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
     }
     
     final public class Coordinator: NSObject {
         @ObservedObject var webViewStateModel: WebViewStateModel
+        let title: String?
         let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
         let allowedHosts: [String]?
         let forbiddenHosts: [String]?
         let credential: URLCredential?
         
         init(action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
-             webViewStateModel: WebViewStateModel, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
+             webViewStateModel: WebViewStateModel, title: String?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
             self.action = action
             self.webViewStateModel = webViewStateModel
+            self.title = title
             self.allowedHosts = allowedHosts
             self.forbiddenHosts = forbiddenHosts
             self.credential = credential
@@ -190,8 +195,12 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         webViewStateModel.loading = false
         webViewStateModel.canGoBack = webView.canGoBack
         webViewStateModel.canGoForward = webView.canGoForward
-        if let title = webView.title {
+        if let title = title {
             webViewStateModel.pageTitle = title
+        } else {
+            if let title = webView.title {
+                webViewStateModel.pageTitle = title
+            }
         }
         action?(.didFinish(webView, navigation))
     }

@@ -19,6 +19,7 @@ public struct WebView: View {
     let reloadImage: Image
     let goForwardImage: Image
     let goBackImage: Image
+    let title: String?
     var allowedHosts: [String]?
     var forbiddenHosts: [String]?
     var credential: URLCredential?
@@ -32,6 +33,7 @@ public struct WebView: View {
          reloadImage: Image = Image(systemName: "gobackward"),
          goForwardImage: Image = Image(systemName: "chevron.forward"),
          goBackImage: Image = Image(systemName: "chevron.backward"),
+         title: String?,
          allowedHosts: [String]? = nil,
          forbiddenHosts: [String]? = nil,
          credential: URLCredential? = nil,
@@ -46,6 +48,8 @@ public struct WebView: View {
         
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(titleColor)]
         
+        self.title = title
+        
         self.allowedHosts = allowedHosts
         self.forbiddenHosts = forbiddenHosts
         self.credential = credential
@@ -53,13 +57,13 @@ public struct WebView: View {
            
     }
     
-    @ObservedObject var webViewStateModel: WebViewStateModel = WebViewStateModel()
+    @StateObject var webViewStateModel: WebViewStateModel = WebViewStateModel()
     @Environment(\.presentationMode) var presentationMode
     
     public var body: some View {
         
         LoadingView(isShowing: .constant(webViewStateModel.loading)) {
-            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, onNavigationAction: onNavigationAction, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
+            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, title: title, onNavigationAction: onNavigationAction, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarTitle(Text(webViewStateModel.pageTitle), displayMode: .inline)
