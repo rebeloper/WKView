@@ -12,7 +12,7 @@ import WebKit
 @available(iOS 14.0, *)
 public struct WebView: View {
     
-    let url: String
+    let data: WebViewData
     let tintColor: Color
     let backText: Text
     let hidesBackButton: Bool
@@ -25,20 +25,22 @@ public struct WebView: View {
     var credential: URLCredential?
     var onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
-    public init(url: String,
-         tintColor: Color = .blue,
-         titleColor: Color = .primary,
-         backText: Text = Text("Back"),
-         hidesBackButton: Bool = false,
-         reloadImage: Image = Image(systemName: "gobackward"),
-         goForwardImage: Image = Image(systemName: "chevron.forward"),
-         goBackImage: Image = Image(systemName: "chevron.backward"),
-         title: String? = nil,
-         allowedHosts: [String]? = nil,
-         forbiddenHosts: [String]? = nil,
-         credential: URLCredential? = nil,
-         onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil) {
-        self.url = url
+    public init(
+        data: WebViewData,
+        tintColor: Color = .blue,
+        titleColor: Color = .primary,
+        backText: Text = Text("Back"),
+        hidesBackButton: Bool = false,
+        reloadImage: Image = Image(systemName: "gobackward"),
+        goForwardImage: Image = Image(systemName: "chevron.forward"),
+        goBackImage: Image = Image(systemName: "chevron.backward"),
+        title: String? = nil,
+        allowedHosts: [String]? = nil,
+        forbiddenHosts: [String]? = nil,
+        credential: URLCredential? = nil,
+        onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)? = nil
+    ) {
+        self.data = data
         self.tintColor = tintColor
         self.backText = backText
         self.hidesBackButton = hidesBackButton
@@ -54,7 +56,6 @@ public struct WebView: View {
         self.forbiddenHosts = forbiddenHosts
         self.credential = credential
         self.onNavigationAction = onNavigationAction
-           
     }
     
     @StateObject var webViewStateModel: WebViewStateModel = WebViewStateModel()
@@ -63,7 +64,15 @@ public struct WebView: View {
     public var body: some View {
         
         LoadingView(isShowing: .constant(webViewStateModel.loading)) {
-            WebPresenterView(url: URL.init(string: url)!, webViewStateModel: webViewStateModel, title: title, onNavigationAction: onNavigationAction, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
+            WebPresenterView(
+                webViewData: data,
+                webViewStateModel: webViewStateModel,
+                title: title,
+                onNavigationAction: onNavigationAction,
+                allowedHosts: allowedHosts,
+                forbiddenHosts: forbiddenHosts,
+                credential: credential
+            )
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarTitle(Text(webViewStateModel.pageTitle), displayMode: .inline)
@@ -114,8 +123,8 @@ public struct WebView: View {
                         Spacer()
                     }
                 }
-                .accentColor(tintColor)
-            , trailing:
+                .accentColor(tintColor),
+            trailing:
                 Button {
                     self.webViewStateModel.reload.toggle()
                 } label: {

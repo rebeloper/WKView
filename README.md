@@ -32,14 +32,14 @@ import WKView
 The simplest way to use `WKView` is to call `WebView` with a `URL String`. 
 IMPORTANT: `WebView` must be presented inside a `NavigationView`.
 
-```
+```swift
 import SwiftUI
 import WKView
 
 struct ContentView: View {
     var body: some View {
         NavigationView {
-            WebView(url: "https://rebeloper.com", hidesBackButton: true)
+            WebView(data: .url("https://rebeloper.com"), hidesBackButton: true)
         }
     }
 }
@@ -51,7 +51,7 @@ Note: Here we are hiding the **Back button** of the web view by setting `hidesBa
 
 In the example below you can see one pushed and two presented `WebView`s. Take a look at the cool ways you may customize the `WebView` style.
 
-```
+```swift
 import SwiftUI
 import WKView
 
@@ -65,7 +65,7 @@ struct ContentView: View {
                 Divider()
                 
                 // 1. Push a WebView with a url
-                NavigationLink("Push WebView", destination: WebView(url: "https://rebeloper.com"))
+                NavigationLink("Push WebView", destination: WebView(data: .url("https://rebeloper.com"))
                 
                 Button(action: {
                     isSheetPresented.toggle()

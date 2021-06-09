@@ -20,12 +20,12 @@ public struct WebPresenterView: View {
         case didFailProvisionalNavigation(WKWebView, WKNavigation, Error)
         case didFail(WKWebView, WKNavigation, Error)
     }
-       
+    
     @ObservedObject var webViewStateModel: WebViewStateModel
     
     private var actionDelegate: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
-    let uRLRequest: URLRequest
+    let webViewData: WebViewData
     
     let title: String?
     
@@ -34,34 +34,33 @@ public struct WebPresenterView: View {
     let credential: URLCredential?
     
     public var body: some View {
-        
-        WebViewWrapper(webViewStateModel: webViewStateModel,
-                       request: uRLRequest,
-                       title: title,
-                       action: actionDelegate,
-                       allowedHosts: allowedHosts,
-                       forbiddenHosts: forbiddenHosts,
-                       credential: credential)
+        WebViewWrapper(
+            webViewStateModel: webViewStateModel,
+            webViewData: webViewData,
+            title: title,
+            action: actionDelegate,
+            allowedHosts: allowedHosts,
+            forbiddenHosts: forbiddenHosts,
+            credential: credential
+        )
     }
     
-    init(uRLRequest: URLRequest, webViewStateModel: WebViewStateModel, title: String?, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
-        self.uRLRequest = uRLRequest
+    init(
+        webViewData: WebViewData,
+        webViewStateModel: WebViewStateModel,
+        title: String?,
+        onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
+        allowedHosts: [String]?,
+        forbiddenHosts: [String]?,
+        credential: URLCredential?
+    ) {
+        self.webViewData = webViewData
         self.webViewStateModel = webViewStateModel
         self.title = title
         self.actionDelegate = onNavigationAction
         self.allowedHosts = allowedHosts
         self.forbiddenHosts = forbiddenHosts
         self.credential = credential
-    }
-    
-    init(url: URL, webViewStateModel: WebViewStateModel, title: String?, onNavigationAction: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
-        self.init(uRLRequest: URLRequest(url: url),
-                  webViewStateModel: webViewStateModel,
-                  title: title,
-                  onNavigationAction: onNavigationAction,
-                  allowedHosts: allowedHosts,
-                  forbiddenHosts: forbiddenHosts,
-                  credential: credential)
     }
 }
 
