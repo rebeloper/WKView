@@ -8,28 +8,36 @@
 import SwiftUI
 import WebKit
 
+public enum WebViewData {
+    case url(URL)
+    case request(URLRequest)
+    case html(String, URL?)
+}
+
 @available(iOS 13.0, *)
 final public class WebViewWrapper : UIViewRepresentable {
     
     @ObservedObject var webViewStateModel: WebViewStateModel
     let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
     
-    let request: URLRequest
+    let webViewData: WebViewData
     let title: String?
     
     let allowedHosts: [String]?
     let forbiddenHosts: [String]?
     let credential: URLCredential?
-      
-    init(webViewStateModel: WebViewStateModel,
-         request: URLRequest,
-         title: String?,
-         action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
-         allowedHosts: [String]?,
-         forbiddenHosts: [String]?,
-         credential: URLCredential?) {
+    
+    init(
+        webViewStateModel: WebViewStateModel,
+        webViewData: WebViewData,
+        title: String?,
+        action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
+        allowedHosts: [String]?,
+        forbiddenHosts: [String]?,
+        credential: URLCredential?
+    ) {
         self.action = action
-        self.request = request
+        self.webViewData = webViewData
         self.title = title
         self.webViewStateModel = webViewStateModel
         self.allowedHosts = allowedHosts
@@ -40,10 +48,19 @@ final public class WebViewWrapper : UIViewRepresentable {
     public func makeUIView(context: Context) -> WKWebView  {
         let view = WKWebView()
         view.navigationDelegate = context.coordinator
-        view.load(request)
+        
+        switch webViewData {
+        case .url(let url):
+            view.load(URLRequest(url: url))
+        case .request(let request):
+            view.load(request)
+        case .html(let html, let url):
+            view.loadHTMLString(html, baseURL: url)
+        }
+        
         return view
     }
-      
+    
     public func updateUIView(_ uiView: WKWebView, context: Context) {
         if uiView.canGoBack, webViewStateModel.goBack {
             uiView.goBack()
@@ -58,7 +75,14 @@ final public class WebViewWrapper : UIViewRepresentable {
     }
     
     public func makeCoordinator() -> Coordinator {
-        return Coordinator(action: action, webViewStateModel: webViewStateModel, title: title, allowedHosts: allowedHosts, forbiddenHosts: forbiddenHosts, credential: credential)
+        Coordinator(
+            action: action,
+            webViewStateModel: webViewStateModel,
+            title: title,
+            allowedHosts: allowedHosts,
+            forbiddenHosts: forbiddenHosts,
+            credential: credential
+        )
     }
     
     final public class Coordinator: NSObject {
@@ -69,8 +93,14 @@ final public class WebViewWrapper : UIViewRepresentable {
         let forbiddenHosts: [String]?
         let credential: URLCredential?
         
-        init(action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
-             webViewStateModel: WebViewStateModel, title: String?, allowedHosts: [String]?, forbiddenHosts: [String]?, credential: URLCredential?) {
+        init(
+            action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?,
+            webViewStateModel: WebViewStateModel,
+            title: String?,
+            allowedHosts: [String]?,
+            forbiddenHosts: [String]?,
+            credential: URLCredential?
+        ) {
             self.action = action
             let modifiedWebViewStateModel = webViewStateModel
             modifiedWebViewStateModel.pageTitle = title ?? "Loading..."
@@ -87,7 +117,11 @@ final public class WebViewWrapper : UIViewRepresentable {
 @available(iOS 13.0, *)
 extension WebViewWrapper.Coordinator: WKNavigationDelegate {
     
-    public func handleAllowedHosts(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public func handleAllowedHosts(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
         if let allowedHosts = allowedHosts {
             
             if let host = navigationAction.request.url?.host {
@@ -117,7 +151,11 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         }
     }
     
-    public func handleForbiddenHosts(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)  {
+    public func handleForbiddenHosts(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    )  {
         if let forbiddenHosts = forbiddenHosts {
             
             if let host = navigationAction.request.url?.host {
@@ -149,11 +187,19 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         }
     }
     
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
         handleForbiddenHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
     }
     
-    public func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    public func webView(
+        _ webView: WKWebView,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
         
         if let credential = credential {
             let authenticationMethod = challenge.protectionSpace.authenticationMethod
@@ -182,7 +228,11 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         action?(.didReceiveServerRedirectForProvisionalNavigation(webView, navigation))
     }
     
-    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    public func webView(
+        _ webView: WKWebView,
+        didFailProvisionalNavigation navigation: WKNavigation!,
+        withError error: Error
+    ) {
         webViewStateModel.loading = false
         webViewStateModel.canGoBack = webView.canGoBack
         webViewStateModel.canGoForward = webView.canGoForward
@@ -207,7 +257,11 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         action?(.didFinish(webView, navigation))
     }
     
-    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    public func webView(
+        _ webView: WKWebView,
+        didFail navigation: WKNavigation!,
+        withError error: Error
+    ) {
         webViewStateModel.loading = false
         webViewStateModel.canGoBack = webView.canGoBack
         webViewStateModel.canGoForward = webView.canGoForward
